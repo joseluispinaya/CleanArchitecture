@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CapaApplication/CapaApplication.csproj" />
+  <Project Path="CapaDomain/CapaDomain.csproj" />
+  <Project Path="CapaInfrastucture/CapaInfrastucture.csproj" />
+</Solution>
