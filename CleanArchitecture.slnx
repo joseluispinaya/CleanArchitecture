@@ -2,4 +2,5 @@
   <Project Path="CapaApplication/CapaApplication.csproj" />
   <Project Path="CapaDomain/CapaDomain.csproj" />
   <Project Path="CapaInfrastucture/CapaInfrastucture.csproj" />
+  <Project Path="CapaWeb/CapaWeb.csproj" Id="e6fbda52-ee06-4ef7-9be9-d0f54b8cff19" />
 </Solution>

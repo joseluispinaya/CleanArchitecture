@@ -1,0 +1,42 @@
+﻿/* =======================================================
+   CUSTOM FILE INPUT (Modal Clubes)
+   ======================================================= */
+
+/* Estilos para el botón izquierdo (Claro) */
+.custom-file-button {
+    cursor: pointer;
+    background-color: #e2e7ec; /* Tono gris claro elegante */
+    color: #2d353c; /* Texto oscuro base de Color Admin */
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+    .custom-file-button:hover {
+        background-color: #d3d8de;
+    }
+
+/* Estilos para el input de la derecha (Claro) */
+.custom-file-text {
+    cursor: pointer !important; /* Forza el puntero de manito para indicar que es clickeable */
+    background-color: #ffffff !important;
+}
+
+
+/* -------------------------------------------------------
+   SOPORTE PARA DARK MODE (Atributo nativo de Color Admin)
+   ------------------------------------------------------- */
+[data-bs-theme="dark"] .custom-file-button {
+    background-color: #2d353c;
+    color: #a8b6c5;
+    border-color: #2d353c;
+}
+
+    [data-bs-theme="dark"] .custom-file-button:hover {
+        background-color: #323b43;
+    }
+
+[data-bs-theme="dark"] .custom-file-text {
+    background-color: #1a2229 !important; /* Fondo oscuro de inputs en Color Admin */
+    color: #a8b6c5;
+    border-color: #2d353c;
+}

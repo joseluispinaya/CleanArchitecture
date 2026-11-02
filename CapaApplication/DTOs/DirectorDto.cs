@@ -9,6 +9,7 @@
         public string? NroCi { get; set; }
         public string? Celular { get; set; }
         public string? Correo { get; set; }
+        public string? ClaveHash { get; set; }
         public string? Photo { get; set; }
         public bool Estado { get; set; }
         public string? NombreUnidadEducativa { get; set; }
