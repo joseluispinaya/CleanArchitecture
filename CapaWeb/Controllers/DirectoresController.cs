@@ -89,5 +89,34 @@ namespace CapaWeb.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Editar([FromForm] IFormFile? foto, [FromForm] string modelo)
+        {
+            try
+            {
+                // Deserializar DTO
+                DirectorDto dto = JsonConvert.DeserializeObject<DirectorDto>(modelo)!;
+
+                // Si viene imagen → subirla
+                if (foto != null)
+                {
+                    dto.Photo = "";
+                    //dto.Photo = await _imageHelper.UploadImageAsync(foto, "images");
+                }
+                else
+                {
+                    dto.Photo = ""; // o null si lo prefieres
+                }
+
+                var rptbd = await _service.GuardarOrEditDirector(dto);
+                return StatusCode(StatusCodes.Status200OK, rptbd);
+            }
+            catch (Exception ex)
+            {
+                Respuesta<int> rptEx = new() { Estado = false, Valor = "error", Data = 0, Mensaje = "Error en el servidor: " + ex.Message };
+                return StatusCode(StatusCodes.Status200OK, rptEx);
+            }
+        }
+
     }
 }
