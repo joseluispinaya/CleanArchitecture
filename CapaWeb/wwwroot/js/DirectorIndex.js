@@ -22,7 +22,7 @@ $(function () {
                 data: null,
                 searchable: false,
                 render: function (data, type, row) {
-                    let logo = row.Photo ? row.Photo : '/imagen/sinimagen.png';
+                    let logo = row.photo ? row.photo : '/imagen/sinimagen.png';
                     return `
                         <div class="d-flex align-items-center">
                             <div class="w-40px h-40px rounded-circle d-flex align-items-center justify-content-center bg-light overflow-hidden shadow-sm me-3">
@@ -84,14 +84,101 @@ $(function () {
 
 });
 
+function cargarUndidadesEd(idUniEd, idSeleccionar) {
+
+    $("#cboUnidadEd").html('<option value="">Cargando unds educativas...</option>');
+    $("#cboUnidadEd").prop("disabled", true);
+
+    fetch(`/UnidadEd/ComboLista?idUniEd=${idUniEd}`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    })
+        .then(response => {
+            return response.ok ? response.json() : Promise.reject(response);
+        })
+        .then(responseJson => {
+            console.log("Datos del servidor:", responseJson);
+
+            if (responseJson.estado) {
+                const lista = responseJson.data;
+
+                if (lista != null && lista.length > 0) {
+
+                    let opcionesHTML = '<option value="">-- Seleccione Und Educativa --</option>';
+
+                    $.each(lista, function (i, row) {
+                        opcionesHTML += `<option value="${row.idUnidadEducativa}">${row.nombre}</option>`;
+                    });
+
+                    $("#cboUnidadEd").html(opcionesHTML);
+                    $("#cboUnidadEd").prop("disabled", false);
+
+                    // Seleccionar el elemento si se proporcionó un ID
+                    if (idSeleccionar != null && idSeleccionar != "") {
+                        $("#cboUnidadEd").val(idSeleccionar);
+                    } else {
+                        $("#cboUnidadEd").val("");
+                    }
+                } else {
+                    $("#cboUnidadEd").html('<option value="">Sin unds educativas disponibles</option>');
+                    $("#cboUnidadEd").prop("disabled", true);
+                }
+
+            } else {
+                $("#cboUnidadEd").html('<option value="">Error al cargar</option>');
+                $("#cboUnidadEd").prop("disabled", true);
+                console.error("Error del servidor:", responseJson.mensaje);
+            }
+
+        })
+        .catch(error => {
+            console.error("Error en la petición fetch:", error);
+            $("#cboUnidadEd").html('<option value="">Error de conexión</option>');
+            $("#cboUnidadEd").prop("disabled", true);
+        });
+}
+
+$('#tbData tbody').on('click', '.btn-editar', function () {
+
+    let fila = $(this).closest('tr');
+    if (fila.hasClass('child')) fila = fila.prev();
+
+    let data = tablaData.row(fila).data();
+    idEditar = data.idDirector;
+
+    // Llamamos a la función: 
+    // data.IdUnidadEducativa para que la incluya en la consulta SQL
+    // data.IdUnidadEducativa de nuevo para que el select se posicione en ella al terminar
+    cargarUndidadesEd(data.idUnidadEducativa, data.idUnidadEducativa);
+
+    $("#txtNombres").val(data.nombres);
+    $("#txtApellidos").val(data.apellidos);
+    $("#txtCorreo").val(data.correo);
+    $("#txtCelular").val(data.celular);
+    $("#txtNroci").val(data.nroCi);
+    $("#cboEstado").val(data.estado ? 1 : 0).prop("disabled", false);
+
+    $("#previewImg3").attr("src", data.photo || "/imagen/sinimagen.png");
+    $("#fileInput3").val("");
+    $('#file3Remove').addClass('d-none');
+
+    $("#myModalLabel").text("Editar Registro");
+    $("#mdUsuario").modal("show");
+});
+
 $("#btnNuevoUsuario").on("click", function () {
     idEditar = 0;
 
     // Limpia todos los inputs que tengan la clase 'model'
     $(".model").val("");
+    cargarUndidadesEd(0, "");
+    $("#cboEstado").val(1).prop("disabled", true);
     $('#file3Remove').addClass('d-none');
 
     $("#previewImg3").attr("src", "/imagen/sinimagen.png");
+    $("#fileInput3").val("");
 
     $("#myModalLabel").text("Registrar Director");
     $("#mdUsuario").modal("show");
@@ -162,9 +249,17 @@ $("#btnGuardarCambios").on("click", function () {
         return;
     }
 
+    let idSeleccionado = $("#cboUnidadEd").val();
+
+    if (idSeleccionado === "") {
+        MensajeToast("Campo incompleto", "Debe seleccionar la U.E.", "warning");
+        habilitarBoton();
+        return;
+    }
+
     const modelo = {
         IdDirector: idEditar,
-        //IdUnidadEducativa: parseInt($("#cboUnidadEd").val()),
+        IdUnidadEducativa: parseInt(idSeleccionado),
         Nombres: $("#txtNombres").val().trim(),
         Apellidos: $("#txtApellidos").val().trim(),
         NroCi: $("#txtNroci").val().trim(),
@@ -183,25 +278,32 @@ $("#btnGuardarCambios").on("click", function () {
 
     formData.append("modelo", JSON.stringify(modelo));
 
-    // --- CÓDIGO PARA IMPRIMIR EN CONSOLA ---
-    console.log("--- CONTENIDO DEL FORMDATA ---");
-    for (const [clave, valor] of formData.entries()) {
-        if (clave === "modelo") {
-            // Convierte el string JSON de vuelta a objeto para verlo ordenado en la consola
-            console.log(`${clave}:`, JSON.parse(valor));
-        } else if (valor instanceof File) {
-            // Muestra detalles del archivo (nombre, tamaño, tipo)
-            console.log(`${clave} (Archivo):`, {
-                nombre: valor.name,
-                tamaño: `${(valor.size / 1024).toFixed(2)} KB`,
-                tipo: valor.type
-            });
-        } else {
-            console.log(`${clave}:`, valor);
-        }
-    }
-    // ----------------------------------------
-    habilitarBoton();
+    $("#mdUsuario").find("div.modal-content").LoadingOverlay("show");
+
+    let urlAccion = idEditar != 0 ? `/${controlador}/Editar` : `/${controlador}/Guardar`;
+    let metodoApi = idEditar != 0 ? "PUT" : "POST";
+
+    fetch(urlAccion, {
+        method: metodoApi,
+        body: formData
+    })
+        .then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            if (responseJson.estado) {
+                MensajeToast("Mensaje", responseJson.mensaje, "success");
+                $("#mdUsuario").modal("hide");
+                tablaData.ajax.reload();
+            } else {
+                mostrarAlerta("Error!", responseJson.mensaje, "warning");
+            }
+        })
+        .catch(() => {
+            mostrarAlerta("Error!", "No se pudo conectar con el servidor.", "warning");
+        })
+        .finally(() => {
+            $("#mdUsuario").find("div.modal-content").LoadingOverlay("hide");
+            habilitarBoton();
+        });
 
 });
 

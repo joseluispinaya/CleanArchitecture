@@ -42,5 +42,16 @@ namespace CapaApplication.Helpers
                 Estado = modelo.Estado
             };
         }
+
+        public static UnidadEducativa MapearEntidadUniEd(UnidadEducativaDto modelo)
+        {
+            return new UnidadEducativa
+            {
+                IdUnidadEducativa = modelo.IdUnidadEducativa,
+                Nombre = modelo.Nombre,
+                NroContacto = modelo.NroContacto,
+                Ubicacion = modelo.Ubicacion
+            };
+        }
     }
 }

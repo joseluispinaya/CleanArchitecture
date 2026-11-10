@@ -17,36 +17,6 @@ namespace CapaApplication.Services
 
         //public async Task<Respuesta<List<Director>>> Lista(int idDirector) => await _repository.Lista(idDirector);
 
-        //public async Task<Respuesta<List<DirectorDto>>> Lista()
-        //{
-        //    Respuesta<List<DirectorDto>> resp = new()
-        //    {
-        //        Estado = false,
-        //        Mensaje = "Error desconocido",
-        //        Data = []
-        //    };
-
-        //    var rpt = await _repository.Lista();
-        //    var listaEntidad = rpt.Data;
-
-        //    var listaDto = listaEntidad!.Select(d => new DirectorDto
-        //    {
-        //        IdDirector = d.IdDirector,
-        //        IdUnidadEducativa = d.IdUnidadEducativa,
-        //        Nombres = d.Nombres,
-        //        Apellidos = d.Apellidos,
-        //        NroCi = d.NroCi,
-        //        Celular = d.Celular,
-        //        Correo = d.Correo,
-        //        Estado = d.Estado,
-        //        Photo = d.Photo,
-        //        NombreUnidadEducativa = d.NombreUnidadEducativa
-        //    }).ToList();
-
-        //    resp.Estado = true;
-        //    resp.Data = listaDto;
-        //    return resp;
-        //}
 
         public async Task<Respuesta<List<DirectorDto>>> Lista(int idDirector)
         {

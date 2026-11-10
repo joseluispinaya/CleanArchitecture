@@ -15,7 +15,14 @@ builder.Services.AddSingleton(new DbConnectionFactory(connectionString!));
 builder.Services.AddScoped<IDirectorRepository, DirectorRepository>();
 builder.Services.AddScoped<DirectorService>();
 
+builder.Services.AddScoped<IUnidadEdRepository, UnidadEdRepository>();
+builder.Services.AddScoped<UnidadEdService>();
+
+//builder.Services.AddScoped<IUnidadEdRepository, UnidadEdRepository>();
+//builder.Services.AddScoped<UnidadEdService>();
+
 builder.Services.AddScoped<IPasswordHelper, PasswordHelper>();
+builder.Services.AddScoped<IFileStorage, FileStorage>();
 
 var app = builder.Build();
 

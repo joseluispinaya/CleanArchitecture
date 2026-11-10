@@ -11,10 +11,12 @@ namespace CapaWeb.Controllers
     {
         private readonly DirectorService _service;
         private readonly IPasswordHelper _passwordHelper;
-        public DirectoresController(DirectorService service, IPasswordHelper passwordHelper)
+        private readonly IFileStorage _fileStorage;
+        public DirectoresController(DirectorService service, IPasswordHelper passwordHelper, IFileStorage fileStorage)
         {
             _service = service;
             _passwordHelper = passwordHelper;
+            _fileStorage = fileStorage;
         }
 
         public IActionResult Index()
@@ -70,7 +72,7 @@ namespace CapaWeb.Controllers
                 // Si viene imagen → subirla
                 if (foto != null)
                 {
-                    dto.Photo = "";
+                    dto.Photo = await _fileStorage.UploadFileAsync(foto);
                     //dto.Photo = await _imageHelper.UploadImageAsync(foto, "images");
                 }
                 else
@@ -100,7 +102,7 @@ namespace CapaWeb.Controllers
                 // Si viene imagen → subirla
                 if (foto != null)
                 {
-                    dto.Photo = "";
+                    dto.Photo = await _fileStorage.UploadFileAsync(foto);
                     //dto.Photo = await _imageHelper.UploadImageAsync(foto, "images");
                 }
                 else

@@ -13,3 +13,39 @@
 [data-bs-theme="dark"] .profile-upload-preview {
     border-color: rgba(255, 255, 255, 0.15);
 }
+
+/* --------------------------------------------------------------------------
+   Custom Button Utilities (.btn-circle)
+   -------------------------------------------------------------------------- */
+.btn-circle {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50% !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+    .btn-circle.btn-sm,
+    .btn-circle-sm {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
+    }
+
+/* --------------------------------------------------------------------------
+   Card Enhancements & Top Border Utility
+   -------------------------------------------------------------------------- */
+.card {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+    .card.border-top {
+        border-top-width: 4px !important;
+        border-right-width: 1px !important;
+        border-bottom-width: 1px !important;
+        border-left-width: 1px !important;
+    }
